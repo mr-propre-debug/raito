@@ -33,7 +33,10 @@ public class Main extends ListenerAdapter {
         CommandListUpdateAction commands = jda.updateCommands();
         commands.addCommands(
                 Commands.slash("ping", "Pong")
-                        .addOption(USER,"user", "The user to ping", true)
+                        .addOption(USER,"user", "The user to ping", true),
+                Commands.slash("gift", "give a gift to someone")
+                        .addOption(USER,"user", "The user to give a gift to", true),
+                Commands.slash("dexgift", "Show all gifts you have received")
         );
         commands.queue();
     }
