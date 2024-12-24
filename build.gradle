@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group = 'fr.raito'
@@ -23,4 +24,20 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+application {
+    mainClass = 'fr.raito.Main' // Point d'entrée, c'est le package complet de Main.java
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'fr.raito.Main' // Classe principale avec package
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
