@@ -35,6 +35,11 @@ public class SlashCommandListener extends ListenerAdapter {
         var initiator = event.getUser(); // Utilisateur initiant la commande
         var gift = GiftManager.getRandomGift(); // Cadeau aléatoire
 
+        if(user.getId().equals(initiator.getId())) {
+            event.reply("Comment ça mon reuf ?")
+                    .setEphemeral(true)
+                    .queue();
+        }else {
         // Enregistrer le cadeau dans le système GiftDex pour le destinataire
         GiftDexManager.addGift(user, gift);
 
@@ -54,6 +59,7 @@ public class SlashCommandListener extends ListenerAdapter {
         event.reply("Le cadeau a été envoyé à " + user.getAsMention() + " !")
                 .setEphemeral(true)
                 .queue();
+        }
     }
     public void giftDex(SlashCommandInteractionEvent event) {
         var user = event.getUser(); // Utilisateur qui a déclenché la commande
