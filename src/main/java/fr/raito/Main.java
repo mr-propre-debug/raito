@@ -36,7 +36,7 @@ public class Main extends ListenerAdapter {
                         .addOption(USER,"user", "The user to ping", true),
                 Commands.slash("gift", "give a gift to someone")
                         .addOption(USER,"user", "The user to give a gift to", true),
-                Commands.slash("dexgift", "Show all gifts you have received")
+                Commands.slash("giftdex", "Show all gifts you have received")
         );
         commands.queue();
     }

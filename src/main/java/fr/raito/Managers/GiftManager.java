@@ -3,8 +3,10 @@ package fr.raito.Managers;
 import fr.raito.Models.Gift;
 
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class GiftManager {
     private static final List<Gift> GIFTS = List.of(
@@ -35,35 +37,41 @@ public class GiftManager {
     public static Gift getRandomGift() {
         Random random = new Random();
         double roll = random.nextDouble(); // Génère un nombre entre 0.0 et 1.0
+        List<Gift> filteredGifts;
 
         if (roll < 0.5) { // 50 % de chance pour des cadeaux communs
-            return GIFTS.stream().filter(g -> g.getRarity() == Gift.Rarity.COMMON)
-                    .findAny()
-                    .orElseThrow();
+            filteredGifts = GIFTS.stream()
+                    .filter(g -> g.getRarity() == Gift.Rarity.COMMON)
+                    .collect(Collectors.toList());
         } else if (roll < 0.75) { // 25 % pour des cadeaux peu communs
-            return GIFTS.stream().filter(g -> g.getRarity() == Gift.Rarity.UNCOMMON).
-                    findAny()
-                    .orElseThrow();
+            filteredGifts = GIFTS.stream()
+                    .filter(g -> g.getRarity() == Gift.Rarity.UNCOMMON)
+                    .collect(Collectors.toList());
         } else if (roll < 0.85) { // 15 % pour des cadeaux rares
-            return GIFTS.stream().filter(g -> g.getRarity() == Gift.Rarity.RARE)
-                    .findAny()
-                    .orElseThrow();
+            filteredGifts = GIFTS.stream()
+                    .filter(g -> g.getRarity() == Gift.Rarity.RARE)
+                    .collect(Collectors.toList());
         } else if (roll < 0.92) { // 8 % pour des cadeaux très rares
-            return GIFTS.stream().filter(g -> g.getRarity() == Gift.Rarity.VERY_RARE)
-                    .findAny()
-                    .orElseThrow();
+            filteredGifts = GIFTS.stream()
+                    .filter(g -> g.getRarity() == Gift.Rarity.VERY_RARE)
+                    .collect(Collectors.toList());
         } else if (roll < 0.985) { // 1.5 % pour des cadeaux mythiques
-            return GIFTS.stream().filter(g -> g.getRarity() == Gift.Rarity.MYTHICAL)
-                    .findAny()
-                    .orElseThrow();
+            filteredGifts = GIFTS.stream()
+                    .filter(g -> g.getRarity() == Gift.Rarity.MYTHICAL)
+                    .collect(Collectors.toList());
         } else { // 0.5 % pour des cadeaux légendaires
-            return GIFTS.stream().filter(g -> g.getRarity() == Gift.Rarity.LEGENDARY)
-                    .findAny()
-                    .orElseThrow();
+            filteredGifts = GIFTS.stream()
+                    .filter(g -> g.getRarity() == Gift.Rarity.LEGENDARY)
+                    .collect(Collectors.toList());
         }
+
+        // Maintenant, on choisit un cadeau aléatoirement dans la liste filtrée
+        return filteredGifts.get(random.nextInt(filteredGifts.size()));
     }
 
     public static List<Gift> getAllGifts() {
-        return GIFTS;
+        return GIFTS.stream()
+                .sorted(Comparator.comparing(Gift::getRarity)) // Trie par ordre de rareté
+                .toList(); // Convertit le flux trié en liste
     }
 }

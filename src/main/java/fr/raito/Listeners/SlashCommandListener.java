@@ -5,6 +5,9 @@ import fr.raito.Models.Gift;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SlashCommandListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -15,8 +18,8 @@ public class SlashCommandListener extends ListenerAdapter {
             case "gift" -> {
                 gift(event);
             }
-            case "dexgift" -> {
-                dexGift(event);
+            case "giftdex" -> {
+                giftDex(event);
             }
 
         }
@@ -52,7 +55,7 @@ public class SlashCommandListener extends ListenerAdapter {
                 .setEphemeral(true)
                 .queue();
     }
-    public void dexGift(SlashCommandInteractionEvent event) {
+    public void giftDex(SlashCommandInteractionEvent event) {
         var user = event.getUser(); // Utilisateur qui a déclenché la commande
         var gifts = GiftDexManager.getGifts(user); // Récupérer ses cadeaux
 
@@ -63,10 +66,27 @@ public class SlashCommandListener extends ListenerAdapter {
             return;
         }
 
+        // Regrouper les cadeaux et compter leur occurrence
+        Map<String, Integer> giftCounts = new HashMap<>();
+        Map<String, Gift> giftDetails = new HashMap<>(); // Pour stocker les détails originaux d'un type de cadeau
+
+        for (Gift gift : gifts) {
+            giftCounts.put(gift.getName(), giftCounts.getOrDefault(gift.getName(), 0) + 1);
+            giftDetails.putIfAbsent(gift.getName(), gift); // Sauvegarder le cadeau original pour les propriétés
+        }
+
         // Construire un message listant tous les cadeaux
         StringBuilder message = new StringBuilder("Voici vos cadeaux :\n");
-        for (Gift gift : gifts) {
-            message.append(String.format("- **%s** [%s]: %s\n", gift.getName(), gift.getRarity().getLabel(), gift.getDescription()));
+        for (Map.Entry<String, Integer> entry : giftCounts.entrySet()) {
+            Gift gift = giftDetails.get(entry.getKey());
+            int count = entry.getValue();
+
+            // Ajouter une ligne pour chaque type de cadeau
+            message.append(String.format("- **%s** [%s] x%d: %s\n",
+                    gift.getName(),
+                    gift.getRarity().getLabel(),
+                    count,
+                    gift.getDescription()));
         }
 
         // Répondre avec la liste des cadeaux
